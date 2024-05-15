@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+
+    List<PizzaModel> pizze = new List<PizzaModel>();
+    pizze.Add(new PizzaModel("margherita", "pomodoro e mozzarella", "#",  6.00m ));
+    pizze.Add(new PizzaModel("Diavola", "pomodoro e mozzarella e salame piccante", "#", 7.50m));
+    pizze.Add(new PizzaModel("Rossa", "pomodoro ", "#", 5.00m));
+
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <div class="container my-4">
+
+        <div class="row">
+
+    @{
+        foreach (PizzaModel pizza in pizze)
+        {   <div class="col-4 ">
+            <div class="card text-center ">
+            <h1>@pizza.PizzaName</h1>
+            <p>@pizza.PizzaDescription</p>
+            <span>@pizza.PizzaPrice</span>
+            </div>
+            </div>
+
+        }
+
+    }
+        </div>
+    </div>
+
+
+</div>
