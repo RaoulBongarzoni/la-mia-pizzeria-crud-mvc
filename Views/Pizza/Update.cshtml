@@ -1,0 +1,45 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    @model Pizza;
+}
+
+
+<form asp-controller="Pizza" asp-action="Update" asp-route-id="@Model.Id" metod="post">
+
+    @Html.AntiForgeryToken();
+    <div class="mb-3">
+        <strong>Nome:</strong>
+        <input asp-for="Name" class="d-block w-100" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <strong>Descrizione:</strong>
+        <input asp-for="Description" class="d-block w-100" />
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <strong>Prezzo:</strong>
+        <input asp-for="Price" class="d-block w-100" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <strong>Url:</strong>
+        <input asp-for="PhotoURL" class="d-block w-100" />
+        <span asp-validation-for="PhotoURL" class="text-danger"></span>
+    </div>
+    <div class="text-end">
+        <input type="submit" class="btn btn-small btn-info" value="Salva">
+    </div>
+
+
+
+
+
+
+
+
+
+</form>

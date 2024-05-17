@@ -6,28 +6,47 @@
 }
 
 <div class="container ">
-    <div class="row flex-column align-content-center">
+    <div class="row">
 
     @{
 
         foreach (Pizza elemento in @Model)
         {
-            <div class="col-6 flex-wrap m-2 ">
-                    <a class="text-center text-black" href="@Url.Action("Detail", "Pizza", new {Id=elemento.Id})" >
-                        <div class="card p-2">
-                            <img href="@elemento.PhotoURL" />
-                <h5>@elemento.Name</h5>
-                <p>@elemento.Description
-                </p>
+            <div class="col-5 my-2 ">
 
-                <hr />
-                <span> 
-                € @elemento.Price
-                </span>
+
+            <hr />
+                <a class="text-center text-black" href="@Url.Action("Detail", "Pizza", new {id=elemento.Id})" >
+                    <div class="card p-2">
+                        <img href="@elemento.PhotoURL" />
+                        <h5>@elemento.Name</h5>
+                        <p>@elemento.Description</p>
+
+                        <hr />
+                        <span> 
+                        € @elemento.Price
+                        </span>
+                    </div>
+                </a>
+
+                <div class="w-100 d-flex justify-content-center">
+                        <button class="btn btn-warning">
+                            <a class="text-center text-black" href="@Url.Action("Update", "Pizza", new {id=elemento.Id})">
+                                modifica
+                            </a>
+                        </button>
+                   
+
+                        <form asp-controller="Pizza" asp-action="Delete" asp-route-id="@elemento.Id" method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class=" btn btn-danger">
+                                elimina
+                            </button>
+                        </form>
                 </div>
-                    </a>
-            
-            
+                    
+                
+                <hr />
             </div>
         }
     }
