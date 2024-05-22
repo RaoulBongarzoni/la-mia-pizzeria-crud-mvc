@@ -1,7 +1,9 @@
 ﻿using la_mia_pizzeria_static.Data;
 using la_mia_pizzeria_static.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.Eventing.Reader;
 
 namespace la_mia_pizzeria_static.Controllers
 {
@@ -27,7 +29,9 @@ namespace la_mia_pizzeria_static.Controllers
             {
 
 
-                Pizza pizzaById = context.Pizza.Where(element => element.Id == id).Include(element => element.Category).FirstOrDefault();       
+                Pizza pizzaById = context.Pizza.Where(element => element.Id == id)
+                    .Include(element => element.Category)
+                    .Include(element => element.Ingredients).FirstOrDefault();       
 
 
 
@@ -53,11 +57,22 @@ namespace la_mia_pizzeria_static.Controllers
         public IActionResult Create()
         {
             using (PizzaContext context = new PizzaContext()) { 
-            List<Category> categories = context.Category.ToList();
-            PizzaFormModel model = new PizzaFormModel();
-            model.Pizza = new Pizza();
-            model.Categories = categories;
-            return View( "Create", model);
+                List<Category> categories = context.Category.ToList();
+                List<Ingredient> Ingredients = context.Ingredient.ToList();
+                List<SelectListItem> listIngredients = new List<SelectListItem> ();
+                PizzaFormModel model = new PizzaFormModel();
+                foreach (Ingredient ingredient in Ingredients)
+                    {
+                        listIngredients.Add(new SelectListItem()
+                        {
+                            Text = ingredient.Name, Value = ingredient.Id.ToString()
+
+                        });
+                    }
+                model.Ingredients = listIngredients;
+                model.Pizza = new Pizza();
+                model.Categories = categories;
+                return View( "Create", model);
             }
         }
 
@@ -70,6 +85,16 @@ namespace la_mia_pizzeria_static.Controllers
                 using (PizzaContext context = new PizzaContext())
                 {
                     List<Category> categories = context.Category.ToList();
+                    List<Ingredient> ingredients = context.Ingredient.ToList();
+                    List<SelectListItem> listIngredients = new List<SelectListItem>();
+                    foreach (Ingredient item in ingredients)
+                    {
+                        listIngredients.Add(
+                        new SelectListItem()
+                        { Text = item.Name, Value = item.Id.ToString() }
+                        );
+
+                    }
                     data.Categories = categories;
 
                     return View("Create", data);
@@ -79,19 +104,35 @@ namespace la_mia_pizzeria_static.Controllers
             using (PizzaContext context = new PizzaContext())
             {
 
+            
 
-            Pizza elementToCreate = new Pizza();
-            elementToCreate.Name = data.Pizza.Name;
-            elementToCreate.Description = data.Pizza.Description;
-            elementToCreate.PhotoURL = data.Pizza.PhotoURL;
-            elementToCreate.Price = data.Pizza.Price;
+
+                Pizza elementToCreate = new Pizza();
+                elementToCreate.Name = data.Pizza.Name;
+                elementToCreate.Description = data.Pizza.Description;
+                elementToCreate.PhotoURL = data.Pizza.PhotoURL;
+                elementToCreate.Price = data.Pizza.Price;
 
                 elementToCreate.CategoryId = data.Pizza.CategoryId;
-            context.Pizza.Add(elementToCreate);
+                List<Ingredient> ingredients = new List<Ingredient>();
+                if (data.SelectedIngredients != null)
+                {
+                    foreach(string slectedIngredientId in data.SelectedIngredients)
+                    {
+                        
+                        int selectedIntIngredientId = int.Parse(slectedIngredientId);
+                        Ingredient elementNow = context.Ingredient.Where(i => i.Id == selectedIntIngredientId).FirstOrDefault();
+                        ingredients.Add( elementNow );
+                    }
+                }
+                elementToCreate.Ingredients= ingredients;
 
-            context.SaveChanges();
+                context.Pizza.Add(elementToCreate);
 
-            return RedirectToAction("Index");
+                context.SaveChanges();
+
+                return RedirectToAction("Index");
+            
             } 
 
                 
@@ -113,6 +154,26 @@ namespace la_mia_pizzeria_static.Controllers
                 {
                     List<Category> categories = context.Category.ToList();
                     PizzaFormModel model = new PizzaFormModel();
+
+                    List<Ingredient> Ingredients = context.Ingredient.ToList();
+                    List<SelectListItem> listIngredients = new List<SelectListItem>();
+                    
+                    foreach(Ingredient item in Ingredients)
+                    {
+                        listIngredients.Add(
+                            new SelectListItem
+                            {
+                                Text = item.Name,
+                                Value = item.Id.ToString(),
+                                //Selected = pizzaToEdit.Ingredients.Any(m => m.Id == item.Id)
+                                
+                            });
+                        ;
+
+                    }
+                    
+                    
+                    model.Ingredients = listIngredients;
                     model.Pizza = pizzaToEdit;
                     model.Categories = categories;
 
@@ -135,15 +196,27 @@ namespace la_mia_pizzeria_static.Controllers
                     List<Category> categories = context.Category.ToList();
                     data.Categories = categories;
 
-                    return View("Create", data);
+
+                    List<Ingredient> ingredients = context.Ingredient.ToList();
+                    List<SelectListItem> listIngredients = new List<SelectListItem>();
+                    foreach (Ingredient item in ingredients)
+                    {
+                        listIngredients.Add(
+                        new SelectListItem()
+                        { Text = item.Name, Value = item.Id.ToString() }
+                        );
+                    }
+                    data.Ingredients = listIngredients;
+                    return View("Update", data);
                 }
             }
 
             using (PizzaContext context = new PizzaContext())
             {
 
-                Pizza elementToUpdate = context.Pizza.Where(pizza => pizza.Id == id).FirstOrDefault();
+                Pizza elementToUpdate = context.Pizza.Where(pizza => pizza.Id == id).Include(e => e.Ingredients).FirstOrDefault();
 
+                elementToUpdate.Ingredients.Clear();
                 if (elementToUpdate != null)
                 {
 
@@ -154,6 +227,15 @@ namespace la_mia_pizzeria_static.Controllers
                     elementToUpdate.CategoryId = data.Pizza.CategoryId;
 
 
+                    foreach (string selectedIngredientId in data.SelectedIngredients)
+                    {
+                        int selectedIntIngredientId = int.Parse(selectedIngredientId);
+                        Ingredient Ingredient = context.Ingredient
+                        .Where(m => m.Id == selectedIntIngredientId)
+                        .FirstOrDefault();
+                        elementToUpdate.Ingredients.Add(Ingredient);
+
+                    }
                     context.SaveChanges();
                     return RedirectToAction("Index");
                 }

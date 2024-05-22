@@ -29,6 +29,15 @@
                     <span>Nessuna categoria</span>
                 }
                 </p>
+
+                @foreach (Ingredient element in Model.Ingredients)
+                {
+                    <div>
+                        <label>
+                            @element.Name
+                        </label>
+                    </div>
+                }
             </div>
         </div>
 

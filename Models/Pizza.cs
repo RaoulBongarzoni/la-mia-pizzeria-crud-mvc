@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+
 namespace la_mia_pizzeria_static.Models
 {
 
@@ -26,6 +27,10 @@ namespace la_mia_pizzeria_static.Models
         public int? CategoryId { get; set; }
         public Category? Category { get; set; }
 
+
+        //aggiunta ingradienti
+
+        public List<Ingredient>? Ingredients { get; set; }
 
 
 

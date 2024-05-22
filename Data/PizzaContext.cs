@@ -11,6 +11,8 @@ namespace la_mia_pizzeria_static.Data
 
         public DbSet<Category> Category { get; set; }
 
+        public DbSet<Ingredient> Ingredient { get; set; }
+
 
 
 
