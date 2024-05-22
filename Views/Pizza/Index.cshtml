@@ -21,12 +21,17 @@
                         <img href="@elemento.PhotoURL" />
                         <h5>@elemento.Name</h5>
                         <p>@elemento.Description</p>
+                        @if(elemento.Category != null){
+
+                        <p>@elemento.Category.Name</p>
+                        }
+
 
                         <hr />
                         <span> 
                         € @elemento.Price
                         </span>
-                    </div>
+                        </div>
                 </a>
 
                 <div class="w-100 d-flex justify-content-center">

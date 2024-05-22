@@ -21,6 +21,15 @@ namespace la_mia_pizzeria_static.Models
         public decimal? Price { get; set; }
 
 
+        //Aggiunta delle categorie
+
+        public int? CategoryId { get; set; }
+        public Category? Category { get; set; }
+
+
+
+
+
         public Pizza() { 
         }
 

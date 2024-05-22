@@ -19,6 +19,16 @@
                 <h5>
                     € @Model.Price
                 </h5>
+                <strong>categoria:</strong>
+                @if (Model.Category != null)
+                {
+                    @Model.Category.Name
+                }
+                else
+                {
+                    <span>Nessuna categoria</span>
+                }
+                </p>
             </div>
         </div>
 

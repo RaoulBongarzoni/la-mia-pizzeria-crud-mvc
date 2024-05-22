@@ -1,13 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using la_mia_pizzeria_static.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace la_mia_pizzeria_static.Models
+namespace la_mia_pizzeria_static.Data
 {
     public class PizzaContext : DbContext
     {
 
 
         public DbSet<Pizza> Pizza { get; set; }
-        
+
+        public DbSet<Category> Category { get; set; }
+
+
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
