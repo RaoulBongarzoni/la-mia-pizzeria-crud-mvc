@@ -1,5 +1,6 @@
 ﻿using la_mia_pizzeria_static.Data;
 using la_mia_pizzeria_static.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -7,34 +8,30 @@ using System.Diagnostics.Eventing.Reader;
 
 namespace la_mia_pizzeria_static.Controllers
 {
+    
     public class PizzaController : Controller
     {
 
         //Index
+
         public IActionResult Index()
         {
             using PizzaContext context = new PizzaContext();
 
 
             //lista di tutte le pizze in database
-            List<Pizza> Pizze = context.Pizza.Include(element => element.Category).ToList();
+            //List<Pizza> Pizze = context.Pizza.Include(element => element.Category).ToList();
 
-            return View("Index", Pizze);
+            return View("Index", PizzaManager.GetAllPizzas());
         }
 
         //Show
+
         public IActionResult Detail(int id) {
 
             using (PizzaContext context = new PizzaContext())
             {
-
-
-                Pizza pizzaById = context.Pizza.Where(element => element.Id == id)
-                    .Include(element => element.Category)
-                    .Include(element => element.Ingredients).FirstOrDefault();       
-
-
-
+                Pizza pizzaById = PizzaManager.GetPizzaById(id);
                 if (pizzaById == null)
                 {
                     return NotFound();
@@ -51,7 +48,7 @@ namespace la_mia_pizzeria_static.Controllers
 
 
         //Create
-
+        [Authorize(Roles = "ADMIN")]
         //gestore rotta base
         [HttpGet]
         public IActionResult Create()
@@ -75,7 +72,7 @@ namespace la_mia_pizzeria_static.Controllers
                 return View( "Create", model);
             }
         }
-
+        [Authorize(Roles = "ADMIN")]
         //gestore del form di creazione
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -142,6 +139,7 @@ namespace la_mia_pizzeria_static.Controllers
         //Update
         //gestore rotta per visualizzazione
         [HttpGet]
+        [Authorize(Roles = "ADMIN")]
         public IActionResult Update(int id)
         {
             using (PizzaContext context = new PizzaContext()) {
@@ -187,6 +185,7 @@ namespace la_mia_pizzeria_static.Controllers
         //modifica e gestione dei dati ricevuti dal form
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "ADMIN")]
         public IActionResult Update(int id, PizzaFormModel data)
         {
             if (!ModelState.IsValid)
@@ -252,6 +251,7 @@ namespace la_mia_pizzeria_static.Controllers
         //Delete
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "ADMIN")]
         public IActionResult Delete(int id)
         {
             using (PizzaContext context = new PizzaContext()) { 
