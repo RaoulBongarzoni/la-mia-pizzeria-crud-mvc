@@ -1,4 +1,5 @@
 ﻿using la_mia_pizzeria_static.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 namespace la_mia_pizzeria_static.Data
 {
@@ -36,6 +37,23 @@ namespace la_mia_pizzeria_static.Data
 
             
         }
+        public static List<Pizza> GetPizzaByName(string name, bool includeInfo = true)
+        {
+            using PizzaContext context = new PizzaContext();
+            if (includeInfo == true)
+            {
+                return context.Pizza.Where(element => element.Name.Contains(name))
+                   .Include(element => element.Category)
+                   .Include(element => element.Ingredients).ToList();
+            }
+
+                return context.Pizza.Where(element => element.Name.Contains(name)).ToList(); 
+           
+
+
+
+        }
+
 
         public static void CreatePizza(Pizza pizza, List<string> SelectedIngredients = null)
         {
@@ -58,7 +76,7 @@ namespace la_mia_pizzeria_static.Data
 
 
 
-        public static bool UpdatePost(int id , string name,  string description, int? categoryId, List<string> selectedingredients) {
+        public static bool UpdatePizza(int id , string name,  string description, int? categoryId, List<string> selectedingredients) {
 
             using PizzaContext context = new PizzaContext();
             var pizzaToUpdate = context.Pizza.Where(p => p.Id == id).Include(p => p.Ingredients).FirstOrDefault();
@@ -90,6 +108,22 @@ namespace la_mia_pizzeria_static.Data
             context.SaveChanges();
 
             return true;
+        }
+
+        public static bool DeletePizza(int id)
+        {
+            using PizzaContext context = new PizzaContext();
+            var pizzaTodelete = context.Pizza.Where(p => p.Id == id).Include(p => p.Ingredients).FirstOrDefault();
+
+            if (pizzaTodelete == null)
+            {
+                return false;
+
+            }
+            context.Remove(pizzaTodelete);
+            context.SaveChanges();
+            return true;
+
         }
 
         

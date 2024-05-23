@@ -122,7 +122,7 @@ namespace la_mia_pizzeria_static.Controllers
 
             //logica sottostante spostata su pizzamanager
             
-            if (PizzaManager.UpdatePost( id, data.Pizza.Name, data.Pizza.Description, data.Pizza.CategoryId, data.SelectedIngredients)
+            if (PizzaManager.UpdatePizza( id, data.Pizza.Name, data.Pizza.Description, data.Pizza.CategoryId, data.SelectedIngredients)
                 )
             {
                 return RedirectToAction("Index");
@@ -177,22 +177,17 @@ namespace la_mia_pizzeria_static.Controllers
         [Authorize(Roles = "ADMIN")]
         public IActionResult Delete(int id)
         {
-            using (PizzaContext context = new PizzaContext()) { 
-            
-                Pizza pizzaToDelete = context.Pizza.Where(element => element.Id == id).FirstOrDefault();
-                if (pizzaToDelete != null)
-                {
-                    context.Pizza.Remove(pizzaToDelete);
-                    context.SaveChanges();
-                    return RedirectToAction("Index");
-
-                }
+            bool found = PizzaManager.DeletePizza(id)
+            if (found)
+            {
+                return View("Index");
+            }
                 else
                 {
                     return NotFound();
                 }
  
-            }
+            
         }
 
     }
