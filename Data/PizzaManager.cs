@@ -36,6 +36,62 @@ namespace la_mia_pizzeria_static.Data
 
             
         }
+
+        public static void CreatePizza(Pizza pizza, List<string> SelectedIngredients = null)
+        {
+
+            using PizzaContext context = new PizzaContext();
+            if (SelectedIngredients != null)
+            {
+                pizza.Ingredients = new List<Ingredient>();
+                foreach (var ingredientId in SelectedIngredients)
+                {
+                    int id = int.Parse(ingredientId);
+                    var ingredient = context.Ingredient.FirstOrDefault(i => i.Id == id);
+                    pizza.Ingredients.Add(ingredient);
+
+                }
+            }
+            context.Pizza.Add(pizza);
+            context.SaveChanges();
+        }
+
+
+
+        public static bool UpdatePost(int id , string name,  string description, int? categoryId, List<string> selectedingredients) {
+
+            using PizzaContext context = new PizzaContext();
+            var pizzaToUpdate = context.Pizza.Where(p => p.Id == id).Include(p => p.Ingredients).FirstOrDefault();
+
+            if (pizzaToUpdate == null)
+            {
+                return false;
+
+            }
+
+            pizzaToUpdate.Name = name;
+            pizzaToUpdate.Description = description;
+            pizzaToUpdate.CategoryId = categoryId;
+
+            pizzaToUpdate.Ingredients.Clear();
+
+
+            if( selectedingredients != null )
+            {
+                foreach (var item in  selectedingredients)
+                {
+                    int ingredientId = int.Parse(item);
+                    var ingredientFromContext = context.Ingredient.FirstOrDefault(x => x.Id == ingredientId);
+                    pizzaToUpdate.Ingredients.Add(ingredientFromContext);
+
+                }
+
+            }
+            context.SaveChanges();
+
+            return true;
+        }
+
         
 
 

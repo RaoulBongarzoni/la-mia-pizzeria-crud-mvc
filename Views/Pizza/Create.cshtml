@@ -1,7 +1,7 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-
+@using la_mia_pizzeria_static.Data
 @model PizzaFormModel
 
 
@@ -50,12 +50,18 @@
         </div>
         <div class="mb-3">
             <strong>ingredienti:</strong>
-            <select asp-for="SelectedIngredients"
-            multiple="multiple"
-            type="checkbox"
-            class="form-control mb-2 mr-sm-2 ml-sm-3 leftList"
-            asp-items="@Model.Ingredients">
-            </select>
+            <div>
+                @{
+
+                    @for(int i = 0; i < Model.Ingredients.Count; i ++)
+                    {
+                        <input type="checkbox" name="SelectedIngredients" value="@Model.Ingredients[i].Value" 
+                         />
+                        @Model.Ingredients[i].Text
+
+                    }
+                }
+            </div>
         </div>
         <div class="text-end">
             <input type="submit" class="btn btn-small btn-info" value="Salva">

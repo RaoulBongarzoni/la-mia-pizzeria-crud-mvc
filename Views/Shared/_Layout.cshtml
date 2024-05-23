@@ -22,12 +22,23 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Pizza" asp-action="Index">Home</a>
                         </li>
+                        @if (User.IsInRole("ADMIN"))
+                        {
+                            
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Pizza" asp-action="Create">Crea</a>
                         </li>
+
                         <li class="nav-item">
                             <a class="nav-link" aria-current="page" href="@Url.Action("Index", "User")">Admin</a>
-                        </li>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="@Url.Action("Index", "User")"> User </a>
+                            </li>
+                        }
 
                         <partial name="_LoginPartial" />
 
